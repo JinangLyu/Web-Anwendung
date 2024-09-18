@@ -1,0 +1,99 @@
+/* --------- KASSENBONS CSS --------- */
+.button-container {
+    display: flex;
+    margin-bottom: 32px;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+}
+
+/* Alle Kassenbons */
+.all-kassenbons {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    box-sizing: border-box;
+    overflow: hidden;
+    margin-bottom: 128px;
+}
+.kassenbon {
+    align-items: center;
+    min-height: 100px;
+    max-width: 100%;
+    gap: 24px;
+    background-color: white;
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    padding: 12px;
+}
+.kassenbon h3 {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--grey);
+    margin-top: 6px;
+}
+.kassenbon h2 {
+    font-size: 20px;
+    color: var(--main-dark);
+}
+.kassenbon p {
+    font-size: 18px;
+    color: var(--main-dark);
+    margin-top: 12px;
+    font-weight: 600;
+}
+.btn-mehranzeigenV2 {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 0 16px;
+    margin-top: 32px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 13px;
+    gap: 12px;
+    min-height: 40px;
+    max-width: 200px;
+    color: var(--main-dark);
+    border: 1px solid var(--border-color);
+}
+.btn-mehranzeigenV2 img {
+    width: 14px;
+    transition: transform 0.2s ease-in-out;
+}
+.btn-mehranzeigenV2:hover img {
+    transform: rotate(-45deg);
+}
+input[type=text] {
+    max-width: max-content;
+    box-sizing: border-box;
+    border: 1px solid var(--border-color);
+    color: var(--grey);
+    border-radius: 6px;
+    font-size: 13px;
+    background-color: white;
+    padding: 10px 20px 10px 20px;
+    min-width: 250px;
+    margin-left: 12px;
+}
+@media (max-width: 624px) {
+    .button-container {
+        display: grid;
+        max-width: max-content;
+        grid-template-columns: 1fr;
+    }
+    input[type=text] {
+        margin-left: 0px;
+    }
+}
+@media (max-width: 1024px) {
+    .all-kassenbons {
+        grid-template-columns: 1fr;
+    }
+    .btn-mehranzeigenV2 {
+        margin-top: 24px;
+    }
+    .btn-mehranzeigenV2 {
+        font-size: 16px;
+    }
+}

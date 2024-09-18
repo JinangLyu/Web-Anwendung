@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/startseite_main.css">pm run
+    <link rel="stylesheet" href="css/kassenbonAlt.css">
+    <title>PreisFinder24 - Kassenbon</title>
+    <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+    <script src="template.js"></script>
+    <script src="script.js"></script>
+    <script>
+        const data = {
+            pages: [
+                { name: "Startseite", link: "/startseite.html" },
+                { name: "Geschäfte", link: "/geschaefte.html" },
+                { name: "Produkte", link: "/produkte.html" },
+                { name: "Artikel", link: "/artikel.html" },
+                { name: "Unternehmen", link: "/unternehmen.html" },
+                { name: "Kassenbons", link: "/kassenbons.html" },
+            ],
+            name: {
+                label: "Aldi",
+                id: "aldi-somewhere-whatever",
+                edit: true,
+                select: [],
+            },
+            bon: [
+                {
+                    name: "Apfel",
+                    price: 12.23,
+                    edit: false,
+                },
+                {
+                    name: "Banane",
+                    price: 3.34,
+                    edit: false,
+                },
+                {
+                    name: "",
+                    price: 0.00,
+                    edit: false,
+                }
+            ],
+            total: 0.00,
+        };
+
+        function update() {
+            // refresh the page
+            data.total = Math.round(data.bon.map((bon) => bon.price).reduce((curr, old) => curr+old, 0.00) * 100)/100;
+            console.log('update', data);
+            window.data = data;
+            applyTemplateWhenDocumentLoaded(data);
+            applyNavBar();
+        }
+        update();
+
+        function edit(index) {
+            console.log('edit', index)
+            // reset all to false
+            for (const bonElement of data.bon) {
+                bonElement.edit = false;
+            }
+            data.name.edit = false;
+
+            // set the correct one
+            if (index === -1) {
+                data.name.edit = true;
+                return;
+            }
+            data.bon[index].edit = true;
+        }
+
+        function focus(index, isPrice) {
+            console.log('focus', index, isPrice)
+            let elem;
+            if (index === -1) {
+                elem = document.querySelector('.bon__title select');
+            } else {
+                elem = document.querySelector(`input[data-index="${index}"][data-is-price="${isPrice}"]`);
+            }
+            elem?.focus();
+        }
+
+        function bonClick(index, isPrice) {
+            edit(index);
+            // noinspection EqualityComparisonWithCoercionJS
+            update();
+            focus(index, isPrice);
+        }
+
+        function bonInput(index, isPrice, elem) {
+            const key = {false: "name", true: "price"}[isPrice];
+            const value = elem.type === "number" ? Number.parseFloat(elem.value) :  elem.value;
+            data.bon[index][key] = value;
+            // update();  // disabled: this kills input focus
+        }
+
+        function bonUnfocus(index, isPrice, elem) {
+            const last = data.bon.length - 1;
+            if (
+                // index === data.bon.length - 1  && // is last row
+                (data.bon[last].name !== '' || data.bon[last].price !== 0) // last row is not empty
+            ) {
+                data.bon.push({
+                    name: "",
+                    price: 0.00,
+                    edit: true,
+                })
+                edit(last + 1);
+                update();
+                focus(last, false);
+            }
+        }
+        function bonDelete(index) {
+            data.bon.splice(index, 1);
+            update();
+        }
+
+        function fetchStores() {
+            data.name.select = [];
+
+            function fetchNextPage(page) {
+                const apiUrl = `http://trawl-fki.ostfalia.de/api/store/find?name=%25&page=${page}&size=999`;
+
+                fetch(apiUrl, {
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-API-KEY': localStorage.getItem('apikey')
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(rData => {
+                    console.log('rData', rData)
+                    for (const contentElement of rData.content) {
+                        data.name.select.push(contentElement);
+                    }
+                    if (rData.content.length !== 0) {
+                        fetchNextPage(page + 1);
+                    } else {
+                        update();
+                    }
+                });
+            }
+            fetchNextPage(0);
+
+        }
+        fetchStores();
+
+        function changeStore(elem) {
+            console.log('changeStore', elem)
+            const id = elem.selectedOptions[0].value;
+            const selectedStore = data.name.select.find((s) => s.id === id)
+            data.name.label = selectedStore.name;
+            data.name.id = selectedStore.id;
+            data.name.edit = false;
+            update();
+        }
+
+    </script>
+</head>
+<body id="template">
+<!-- NAVBAR-Section -->
+<header>
+    <a class="logo" href="startseite.html">PreisFinder<span>24</span></a>
+    <div class="hamburger">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+    </div>
+    <nav class="nav-bar">
+        <ul>
+            {{#each pages}}
+            <li>
+                <a href="{{ link }}">{{ name }}</a>
+            </li>
+            {{/each}}
+        </ul>
+    </nav>
+    <div class="profileside">
+        <button class="btn-second">Log in</button>
+        <button class="btn-main">Registrieren</button>
+        <img src="images/user-icon.svg" alt="user-icon">
+    </div>
+</header>
+
+
+<!-- Main-Section -->
+<main>
+<h1>Kassenbon spenden</h1>
+<div class="bon">
+    <div class="bon__title">
+    {{#unless name.edit}}
+        <span
+            class="bon__editable"
+            onclick="bonClick(-1, false)"
+        >{{ name.label }}{{#unless name.label}}&nbsp;{{/unless}}</span>
+    {{else}}
+        <select oninput="changeStore(this)">
+            <option value="{{@key}}">…</option>
+            {{#each name.select}}
+            <option value="{{this.id}}">{{this.name}}</option>
+            {{/each}}
+        </select>
+    {{/unless}}
+    </div>
+    {{#each bon}}
+    <span class="bon__row">
+        {{#unless edit}}
+        <span class="bon__label" onclick="bonClick({{@index}}, false)" data-index="{{@index}}" data-is-price="false">
+            <span class="bon__editable">{{ name }}</span>
+        </span>
+        <span class="bon__price" onclick="bonClick({{@index}}, true)" data-index="{{@index}}" data-is-price="true">
+            <span class="bon__editable">{{ price }}&nbsp;€</span>
+        </span>
+        <span class="bon__delete" onclick="bonDelete({{@index}})" data-index="{{@index}}" data-is-price="true">
+            &times;
+        </span>
+        {{else}}
+
+        <span class="bon__label">
+            <input
+                type="text"
+                value="{{name}}"
+                oninput="bonInput({{@index}}, false, this)"
+                onblur="bonUnfocus({{@index}}, false, this)"
+                data-index="{{@index}}"
+                data-is-price="false"
+            />
+        </span>
+        <span class="bon__price">
+            <input
+                type="number"
+                step="0.01"
+                value="{{price}}"
+                oninput="bonInput({{@index}}, true, this)"
+                onblur="bonUnfocus({{@index}}, true, this)"
+                data-index="{{@index}}"
+                data-is-price="true"
+            />&nbsp;€
+        </span>
+        {{/unless}}
+    </span>
+    {{/each}}
+    <span class="bon__row bon__add">
+
+    </span>
+    <span class="bon__row bon__sum">
+        <span class="bon__label"></span>
+        <span class="bon__price">
+            {{ total }}&nbsp;€
+        </span>
+    </span>
+</div>
+
+
+<!-- FOOTER -->
+<div class="footer">
+    <div class="logo-description">
+        <h3><a href="startseite.html">PreisFinder<span>24</span></a></h3>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+    </div>
+    <div class="footer-nav">
+        {{#each pages}}
+            <div class="nav-item"><a href="{{ link }}">{{ name }}</a></div>
+        {{/each}}
+    </div>
+</div>
+
+<script id="nav-template" type="text/x-handlebars-template">
+    {{#each pages}}
+    <li>
+        <a href="{{ this.link }}">{{ this.name }}</a>
+    </li>
+    {{/each}}
+</script>
+
+<script>
+    if (localStorage.getItem('apikey') === null) {
+        localStorage.setItem('apikey', prompt('API KEY PLZ'));
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // Get company ID from query parameter
+        const params = new URLSearchParams(window.location.search);
+        const storeId = params.get('id');
+
+        // Fetch and display company details
+        if (storeId) {
+            fetchStoreDetails(storeId);
+        }
+
+        // Compile and render the navigation template
+        const pages = [
+            { name: "Startseite", link: "/startseite.html" },
+            { name: "Geschäfte", link: "/geschaefte.html" },
+            { name: "Produkte", link: "/produkte.html" },
+            { name: "Artikel", link: "/artikel.html" },
+            { name: "Unternehmen", link: "/unternehmen.html" },
+            { name: "Kassenbons", link: "/kassenbons.html" },
+        ];
+    });
+
+    function fetchStoreDetails(storeId) {
+        const apiUrl = `http://trawl-fki.ostfalia.de/api/store/${storeId}`;
+
+        fetch(apiUrl, {
+            headers: {
+                'Accept': 'application/json',
+                'X-API-KEY': localStorage.getItem('apikey')
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Assuming the API returns the company object directly
+                const company = data;
+
+                // Compile and render the template
+                const source = document.getElementById('geschaeft-details-template').innerHTML;
+                const template = Handlebars.compile(source);
+                const html = template(company);
+
+                document.getElementById('geschaeft-details').innerHTML = html;
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+    }
+</script>
+
+<script src="script.js"></script>
+</body>
+</html>

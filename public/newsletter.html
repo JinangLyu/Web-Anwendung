@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/startseite_main.css">
+    <link rel="stylesheet" href="css/newsletter.css">
+    <title>PreisFinder24 - Newsletter</title>
+    <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+    <script src="template.js"></script>
+    <script>
+        const pages = [
+            { name: "Startseite", link: "/startseite.html" },
+            { name: "Geschäfte", link: "/geschaefte.html" },
+            { name: "Produkte", link: "/produkte.html" },
+            { name: "Artikel", link: "/artikel.html" },
+            { name: "Unternehmen", link: "/unternehmen.html" },
+            { name: "Kassenbons", link: "/kassenbons.html" },
+        ];
+        applyTemplateWhenDocumentLoaded({pages: pages});
+    </script>
+    </head>
+    <body id="template">
+    <!-- NAVBAR-Section -->
+    <header>
+        <a class="logo" href="startseite.html">PreisFinder<span>24</span></a>
+        <div class="hamburger">
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+        </div>
+        <nav class="nav-bar">
+            <ul id="template_root">
+                {{#each pages}}
+                <li>
+                    <a href="{{ this.link }}">{{ this.name }}</a>
+                </li>
+                {{/each}}
+            </ul>
+        </nav>
+        <div class="profileside">
+            <button class="btn-second">Log in</button>
+            <button class="btn-main">Registrieren</button>
+            <img src="images/user-icon.svg" alt="user-icon">
+        </div>
+    </header>
+
+    <!-- Main-Section -->
+    <div class="div__container div__newsletter">
+        <div class="container_details">
+            <div class="detail-navigation">
+                <img src="images/arrow-iconV2.svg">
+                <a href="startseite.html">Zurück zu Startseite</a>
+            </div>
+        </div>
+        <div class="main-texts">
+            <h1>Sie sind daran interessiert, kostenlos und wöchentlich von den neuesten
+                Artikeln zu erfahren?</h1>
+            <p>Sie können die Newsletter jederzeit deabonnieren indem Sie mit
+            !abbrechen auf die E-Mail antworten</p>
+            <label for="email">Geben Sie hier Ihre E-Mail ein:</label>
+            <input type="email" id="email" name="email">
+            <button id="name-search-btn" class="search-btn">Suchen</button>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="logo-description">
+            <h3>PreisFinder<span>24</span></h3>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        </div>
+        <div class="footer-nav">
+            <div class="nav-item"><a href="startseite.html">Startseite</a></div>
+            <div class="nav-item"><a href="geschaefte.html">Geschäfte</a></div>
+            <div class="nav-item"><a href="produkte.html">Produkte</a></div>
+            <div class="nav-item"><a href="artikel.html">Artikel</a></div>
+            <div class="nav-item"><a href="unternehmen.html">Unternehmen</a></div>
+            <div class="nav-item"><a href="kassenbon.html">Kassenbon</a></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    </body>
+</html>

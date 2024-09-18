@@ -1,0 +1,36 @@
+{% extends 'templates/base.njk'%}
+{% from 'templates/parts/pagination.njk' import paginator %}
+
+{% block main %}
+<div class="div__container">
+    <!-- Company Details -->
+    <div id="product-details">
+        <div class="container_details">
+            {% if not params.id %}
+            <form action="" method="GET">
+                <label>GTIN: </label><input name="id" placeholder="GTIN">
+                <input type="submit">
+            </form>
+            {% else %}
+            <div class="detail-navigation">
+                <img src="images/arrow-iconV2.svg">
+                <a href="artikel.html">Zurück zu Artikel</a>
+            </div>
+            <div class="artikel-all">
+                <div class="artikel-left">
+                    <h2>{{ item.name }}</h2>
+                    <img src="http://trawl-fki.ostfalia.de/{{ item.image }}">
+                </div>
+                <div class="section">
+                    <p>Beschreibung: {{ item.description }}</p>
+                    <p>GTIN: {{ item.gtin }}</p>
+                    <p>Produkt: {{ item.product }}</p>
+                    <p>Quantität: {{ item.quantity.value }} {{ item.quantity.unit }}</p>
+                    <p>Hersteller: {{ item.producer }}</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

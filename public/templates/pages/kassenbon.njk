@@ -1,0 +1,122 @@
+{% extends 'templates/base.njk'%}
+{% from 'templates/parts/store-details.njk' import storeDetails %}
+
+{% block main %}
+<div class="div__container">
+    <div class="detail-navigation" style="margin-top: 64px;">
+        <img src="images/arrow-iconV2.svg">
+        <a href="kassenbons.html">Zurück zu den Kassenbons</a>
+    </div>
+</div>
+
+<h1 style=" margin-top: 0px">Kassenbon spenden</h1>
+<div class="bon">
+    <div class="bon__title">
+    {% if not store.edit %}
+        <span
+            class="bon__editable"
+            onclick="bonClick(-1, false)"
+        >{{ store.label }}{% if not store.label  %}&nbsp;{% endif %}</span>
+    {% else %}
+        <select oninput="storeChange(this)">
+            <option value="…">…</option>
+            {% for store in store.select %} }}
+            <option value="{{ store.id }}">{{ store.name }}</option>
+            {% endfor %}
+        </select>
+    {% endif %}
+    </div>
+    <div class="bon__date">
+        {% if not date.edit %}
+        <span
+            class="bon__editable"
+            onclick="bonClick(-2, false)"
+        >
+            {{ date.date | datetime }}
+            {% if not date.date %}&nbsp;{% endif %}
+            {{ date.timezone }}
+        </span>
+        {% else %}
+            <input
+                type="datetime-local"
+                value="{{ date.date | datetime_local_value }}"
+                oninput="dateInput(this)"
+                onblur="dateUnfocus(-2, false, this)"
+                data-index="-2"
+                data-is-price="false"
+            />
+            {{ date.timezone }}
+        {% endif %}
+    </div>
+    {% for boner in bon %}
+    <span class="bon__row">
+    {% if not boner.edit %}
+        <span class="bon__label" onclick="bonClick({{ loop.index0 }}, false)" data-index="{{ loop.index0 }}" data-is-price="false">
+            <span class="bon__editable">{{ boner.name }}{% if not boner.name %}<i>+</i>{% endif %}</span>
+        </span>
+        <span class="bon__price" onclick="bonClick({{ loop.index0 }}, true)" data-index="{{ loop.index0 }}" data-is-price="true">
+            <span class="bon__editable">{{ boner.price | price }}&nbsp;€</span>
+        </span>
+        {% if boner.name or boner.price %}
+        <span class="bon__delete" onclick="bonDelete({{ loop.index0 }})" data-index="{{ loop.index0 }}" data-is-price="true">
+            &times;
+        </span>
+        {% else %}
+        <span class="bon__delete" data-index="{{ loop.index0 }}" data-is-price="true">
+            &nbsp; &nbsp;
+        </span>
+        {% endif %}
+    {% else %}
+        <span class="bon__label autocomplete">
+            <input
+                type="text"
+                value="{{ boner.name }}"
+                oninput="bonInput({{ loop.index - 1 }}, false, this)"
+                onblur="bonUnfocus({{ loop.index - 1 }}, false, this)"
+                data-index="{{ loop.index - 1 }}"
+                data-is-price="false"
+                autocomplete="off"
+            />
+        </span>
+        <span class="bon__price">
+            <input
+                type="number"
+                step="0.01"
+                value="{{ boner.price }}"
+                oninput="bonInput({{ loop.index - 1 }}, true, this)"
+                onblur="bonUnfocus({{ loop.index - 1 }}, true, this)"
+                data-index="{{ loop.index - 1 }}"
+                data-is-price="true"
+            />&nbsp;€
+        </span>
+        <span class="bon__submit" onclick="bonSubmit({{ loop.index - 1 }})" data-index="{{ loop.index - 1 }}" data-is-price="true">
+            &#10003;
+        </span>
+    {%  endif %}
+    </span>
+    {% endfor %}
+    <span class="bon__row bon__add">
+
+    </span>
+    <span class="bon__row bon__sum">
+        <span class="bon__label"></span>
+        <span class="bon__price">
+            {{ total | price}}&nbsp;€
+        </span>
+    </span>
+</div>
+
+{% if store.details %}
+<div class="div__container">
+    <div class="container_details">
+        <div class="store_details">
+            <h3>Über den Laden</h3>
+            <div>
+                {{ storeDetails(store.details) }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

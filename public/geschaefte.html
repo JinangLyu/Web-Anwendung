@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/startseite_main.css">
+    <link rel="stylesheet" href="css/pages/geschaefte.css">
+    <title>PreisFinder24 - Geschäfte</title>
+    <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+    <script src="template.js"></script>
+</head>
+<body id="template">
+<!-- NAVBAR-Section -->
+<header>
+    <a class="logo" href="startseite.html">PreisFinder<span>24</span></a>
+    <div class="hamburger">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+    </div>
+    <nav class="nav-bar">
+        <ul id="template_root">
+            <!-- Navigation will be rendered here -->
+        </ul>
+    </nav>
+    <div class="profileside">
+        <button class="btn-second">Log in</button>
+        <button class="btn-main">Registrieren</button>
+        <img src="images/user-icon.svg" alt="user-icon">
+    </div>
+</header>
+
+<!-- Main-Section -->
+<div class="div__container">
+    <!-- Titel, Filter-Buttons -->
+    <h3 id="store-title">Geschäfte</h3>
+    <div class="filter-buttons">
+        <input type="text" id="id-search" placeholder="Suchen nach ID..">
+        <button id="id-search-btn" class="search-btn">Suchen</button>
+        <input type="text" id="name-search" placeholder="Suchen nach Name..">
+        <button id="name-search-btn" class="search-btn">Suchen</button>
+    </div>
+
+    <!-- all stores -->
+    <div class="all-stores">
+        <!-- Handlebars template will be rendered here -->
+    </div>
+</div>
+
+<!-- Pagination -->
+<div class="line_pagination"></div>
+<div class="page_container">
+    <div class="pagination">
+        <button class="btn-page prev">Zurück</button>
+        <ul class="ul-pagination">
+            <!-- Handlebars template will be rendered here -->
+        </ul>
+        <button class="btn-page next">Weiter</button>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+    <div class="logo-description">
+        <h3>PreisFinder<span>24</span></h3>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+    </div>
+    <div class="footer-nav">
+        <div class="nav-item"><a href="startseite.html">Startseite</a></div>
+        <div class="nav-item"><a href="geschaefte.html">Geschäfte</a></div>
+        <div class="nav-item"><a href="produkte.html">Produkte</a></div>
+        <div class="nav-item"><a href="artikel.html">Artikel</a></div>
+        <div class="nav-item"><a href="unternehmen.html">Unternehmen</a></div>
+        <div class="nav-item"><a href="kassenbons.html">Kassenbons</a></div>
+    </div>
+</div>
+
+<!-- Navigation Template -->
+<script id="nav-template" type="text/x-handlebars-template">
+    {{#each pages}}
+    <li>
+        <a href="{{ this.link }}">{{ this.name }}</a>
+    </li>
+    {{/each}}
+</script>
+
+<script id="store-template" type="text/x-handlebars-template">
+    {{#each stores}}
+    <div class="store">
+        <h3 class="store-address">{{ this.id }}</h3>
+        <h2>{{ this.nice_name }}</h2>
+        <p>{{ this.description }}</p>
+        <a class="btn-mehranzeigenV2" href="geschaeft-details.html?id={{ this.id }}">
+            Details ansehen
+            <img src="images/arrow-iconV2.svg">
+        </a>
+    </div>
+    {{/each}}
+</script>
+
+<script id="pagination-template" type="text/x-handlebars-template">
+    {{#each pagination}}
+    {{#if this.isEllipsis}}
+    <li class="link">...</li>
+    {{else}}
+    <li class="link {{#if this.isActive}}active{{/if}}" value="{{ this.page }}">{{ this.page }}</li>
+    {{/if}}
+    {{/each}}
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const pages = [
+            { name: "Startseite", link: "/startseite.html" },
+            { name: "Geschäfte", link: "/geschaefte.html" },
+            { name: "Produkte", link: "/produkte.html" },
+            { name: "Artikel", link: "/artikel.html" },
+            { name: "Unternehmen", link: "/unternehmen.html" },
+            { name: "Kassenbons", link: "/kassenbons.html" },
+        ];
+
+        // Compile and render the navigation template
+        const navSource = document.getElementById('nav-template').innerHTML;
+        const navTemplate = Handlebars.compile(navSource);
+        const navHtml = navTemplate({ pages: pages });
+        document.getElementById('template_root').innerHTML = navHtml;
+    });
+
+    if (localStorage.getItem('apikey') === null) {
+        localStorage.setItem('apikey', prompt('API KEY PLZ'));
+    }
+
+    let currentPage = 0;
+    let totalPages = 0;
+    let allStores = [];
+    let filteredStores = [];
+    const itemsPerPage = 12;
+
+    function fetchStores(page = 0) {
+        const apiUrl = `http://trawl-fki.ostfalia.de/api/store/find?name=%25&page=${page}&size=1000`;
+
+        fetch(apiUrl, {
+            headers: {
+                'Accept': 'application/json',
+                'X-API-KEY': localStorage.getItem('apikey')
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                allStores = data.content;
+                filteredStores = allStores;
+                totalPages = Math.ceil(filteredStores.length / itemsPerPage);
+                currentPage = 0;
+
+                renderStores(filteredStores.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage));
+                renderPagination(totalPages, currentPage);
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+    }
+
+    function renderStores(stores) {
+        stores = stores.map((store) => {
+            store.nice_name = `${store.name.split('_')[0]} — ${store.location.address.city}, ${store.location.address.street}`;
+            store.description = 'Lorem Ipsum';
+            return store;
+        });
+
+        const source = document.getElementById('store-template').innerHTML;
+        const template = Handlebars.compile(source);
+        const context = { stores: stores };
+        const html = template(context);
+
+        document.querySelector('.all-stores').innerHTML = html;
+
+        document.querySelector('.btn-page.prev').disabled = currentPage === 0;
+        document.querySelector('.btn-page.next').disabled = currentPage === totalPages - 1;
+    }
+
+    function renderPagination(totalPages, currentPage) {
+        const pagination = [];
+        if (totalPages <= 5) {
+            for (let i = 1; i <= totalPages; i++) {
+                pagination.push({ page: i, isActive: i === currentPage + 1 });
+            }
+        } else {
+            if (currentPage <= 2) {
+                for (let i = 1; i <= 4; i++) {
+                    pagination.push({ page: i, isActive: i === currentPage + 1 });
+                }
+                pagination.push({ isEllipsis: true });
+                pagination.push({ page: totalPages, isActive: false });
+            } else if (currentPage >= totalPages - 3) {
+                pagination.push({ page: 1, isActive: false });
+                pagination.push({ isEllipsis: true });
+                for (let i = totalPages - 3; i <= totalPages; i++) {
+                    pagination.push({ page: i, isActive: i === currentPage + 1 });
+                }
+            } else {
+                pagination.push({ page: 1, isActive: false });
+                pagination.push({ isEllipsis: true });
+                for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+                    pagination.push({ page: i, isActive: i === currentPage + 1 });
+                }
+                pagination.push({ isEllipsis: true });
+                pagination.push({ page: totalPages, isActive: false });
+            }
+        }
+
+        const paginationSource = document.getElementById('pagination-template').innerHTML;
+        const paginationTemplate = Handlebars.compile(paginationSource);
+        const paginationContext = { pagination: pagination };
+        const paginationHtml = paginationTemplate(paginationContext);
+
+        document.querySelector('.ul-pagination').innerHTML = paginationHtml;
+    }
+
+    document.querySelector('.pagination').addEventListener('click', (event) => {
+        if (event.target.tagName === 'LI' && !event.target.textContent.includes('...')) {
+            const page = parseInt(event.target.getAttribute('value'), 10) - 1;
+            currentPage = page;
+            renderStores(filteredStores.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage));
+            renderPagination(totalPages, currentPage);
+        } else if (event.target.classList.contains('prev')) {
+            if (currentPage > 0) {
+                currentPage -= 1;
+                renderStores(filteredStores.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage));
+                renderPagination(totalPages, currentPage);
+            }
+        } else if (event.target.classList.contains('next')) {
+            if (currentPage < totalPages - 1) {
+                currentPage += 1;
+                renderStores(filteredStores.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage));
+                renderPagination(totalPages, currentPage);
+            }
+        }
+    });
+
+    const idSearchBtn = document.getElementById('id-search-btn');
+    const nameSearchBtn = document.getElementById('name-search-btn');
+
+    idSearchBtn.addEventListener('click', () => {
+        const idSearchValue = document.getElementById('id-search').value.trim();
+        filteredStores = allStores.filter(store => store.id.startsWith(idSearchValue.toLowerCase()));
+        totalPages = Math.ceil(filteredStores.length / itemsPerPage);
+        currentPage = 0;
+        renderStores(filteredStores.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage));
+        renderPagination(totalPages, currentPage);
+    });
+
+    nameSearchBtn.addEventListener('click', () => {
+        const nameSearchValue = document.getElementById('name-search').value.trim();
+        filteredStores = allStores.filter(store => store.name.toLowerCase().startsWith(nameSearchValue.toLowerCase()));
+        totalPages = Math.ceil(filteredStores.length / itemsPerPage);
+        currentPage = 0;
+        renderStores(filteredStores.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage));
+        renderPagination(totalPages, currentPage);
+    });
+
+    fetchStores();
+</script>
+
+<script src="script.js"></script>
+</body>
+</html>

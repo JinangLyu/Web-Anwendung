@@ -1,0 +1,60 @@
+{% extends 'templates/base.njk'%}
+{% from 'templates/parts/pagination.njk' import paginator %}
+
+{% block main %}
+<div class="div__container">
+    <!-- Titel, Filter-Buttons -->
+    <h3 id="artikel-title">Artikel</h3>
+    <div class="filter-buttons">
+        <input
+            type="text"
+            id="gtin-search"
+            placeholder="Suchen nach GTIN.."
+            value="{{ search }}"
+        >
+        <button
+            id="gtin-search-btn"
+            class="search-btn"
+            onclick="filterOnInput(document.getElementById('gtin-search').value)"
+        >Suchen</button>
+        <!--<label class="checkbox-container">
+            <input type="checkbox" id="special-offers">
+            <span class="checkmark"></span>
+            Sonderangebote anzeigen
+        </label>
+        <label class="checkbox-container">
+            <input type="checkbox" id="price-asc">
+            <span class="checkmark"></span>
+            Preise aufsteigend
+        </label>
+        <label class="checkbox-container">
+            <input type="checkbox" id="price-desc">
+            <span class="checkmark"></span>
+            Preise absteigend
+        </label>-->
+    </div>
+</div>
+
+<!-- Alle Artikel -->
+<div class="all-artikels">
+    {% for item in paginated_items %}
+    <div class="artikel">
+        <img alt="product photo" src="http://trawl-fki.ostfalia.de/{{ item.image }}" width="125" height="125">
+        <div class="right-side-artikel">
+            <h2>{{ item.name }}</h2>
+            <p>{{ item.nice_description }}</p>
+            <p>{{ item.gtin }}</p>
+            <h3 class="price">{{ (prices[item.gtin] / 100) | price }}&nbsp;€</h3>
+            <a class="btn-mehranzeigenV2" href="artikel-details.html?id={{ item.gtin }}">
+                Details ansehen
+                <img alt="➔" src="images/arrow-iconV2.svg">
+            </a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="line_pagination"></div>
+{{ paginator(pagination) }}
+
+{% endblock %}

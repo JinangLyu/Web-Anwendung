@@ -1,0 +1,63 @@
+/* ----- DETAILSEITEN CSS ------ */
+
+.container_details {
+    max-width: 800px;
+    padding-top: 64px;
+    padding-bottom: 64px;
+    background-color: #fff;
+    /*box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);*/
+}
+h2 {
+    color: var(--main-dark);
+}
+.section {
+    margin-bottom: 20px;
+}
+.section p {
+    margin: 5px 0;
+    color: var(--grey);
+}
+.artikel-all {
+    display: flex;
+    gap: 36px;
+}
+.artikel-left {
+    width: 100%;
+}
+.artikel-left img {
+    width: 100%;
+    height: auto;
+}
+
+
+/* NAVIGATION */
+.detail-navigation {
+    display: flex;
+    align-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 24px;
+    cursor: pointer;
+}
+.detail-navigation:hover img {
+    transform: rotate(45deg);
+}
+.detail-navigation a {
+    color: var(--main-dark);
+    font-weight: 500;
+    transition: color 0.2s ease-in-out;
+}
+.detail-navigation a:hover {
+    color: var(--grey);
+}
+.detail-navigation img {
+    rotate: 180deg;
+    transition: transform 0.2s ease-in-out;
+}
+
+
+.geschaeft-nav {
+    margin-top: 64px;
+    margin-bottom: 0px;
+}
+

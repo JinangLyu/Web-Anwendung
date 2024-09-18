@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/startseite_main.css">
+    <link rel="stylesheet" href="css/pages/artikel.css">
+    <title>PreisFinder24 - Startseite</title>
+    <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+    <script src="template.js"></script>
+</head>
+<body id="template">
+<!-- NAVBAR-Section -->
+<header>
+    <a class="logo" href="startseite.html">PreisFinder<span>24</span></a>
+    <div class="hamburger">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+    </div>
+    <nav class="nav-bar">
+        <ul id="template_root">
+            <!-- Navigation wird hier eingefügt -->
+        </ul>
+    </nav>
+    <div class="profileside">
+        <button class="btn-second">Log in</button>
+        <button class="btn-main">Registrieren</button>
+        <img src="images/user-icon.svg" alt="user-icon">
+    </div>
+</header>
+
+
+<!-- Main-Section -->
+<div class="div__container">
+    <div class="main-texts">
+        <h1>Finde immer die <span>neuesten Artikel</span> von angesagten
+            Drogerien deutschlandweit im Vergleich</h1>
+        <!--<p>Finde aktuelle Preise von angesagten Drogerien deutschlandweit</p>-->
+        <!--<button class="btn-main" onclick="openNewPage()">Informiere dich jetzt</button>-->
+
+        <p id="newsletter">Abonniere unsere Newsletter um immer von den neuesten Artikel zu erfahren: <a href="newsletter.html">Jetzt für Newsletter anmelden</a></p>
+    </div>
+
+    <h2 style="margin-top: 48px; font-size: 36px; color: #202125; text-align: center">Unsere neuesten Artikel!</h2>
+    <div class="all-artikels" style="padding: 0">
+        <!-- Handlebars template wird hier gerendert -->
+    </div>
+    <div class="button-container">
+        <button class="btn-main btn-artikel" onclick="openNewPage()">Alle Artikel anzeigen</button>
+    </div>
+    <h2 style="margin-top: 96px; font-size: 36px; color: #202125; text-align: center">Über unsere Seiten</h2>
+    <div class="introductions">
+        <div class="box1">
+            <img src="images/geschaeft-icon.svg" class="box1-icon">
+            <h3>Geschäft</h3>
+            <p>Durchsuchen Sie unsere umfassende Liste von Drogerien,
+                um mehr über Geschäftsname, Ort und Kontakt zu erfahren.</p>
+            <div class="btn-mehranzeigen">
+                <a href="./geschaefte.html">Mehr anzeigen</a>
+                <img src="images/arrow-icon.svg">
+            </div>
+        </div>
+        <div class="box1">
+            <img src="images/produkt-icon.svg" class="box1-icon">
+            <h3>Produkt</h3>
+            <p>Finden Sie die Produktarten aus den verschiedenen
+                Drogerien. Wir bieten detaillierte Informationen
+                von Pflegeprodukten bis hin zu Haushaltsartikeln.</p>
+            <div class="btn-mehranzeigen">
+                <a href="./produkte.html">Mehr anzeigen</a>
+                <img src="images/arrow-icon.svg">
+            </div>
+        </div>
+        <div class="box1">
+            <img src="images/artikel-icon.svg" class="box1-icon">
+            <h3>Artikel</h3>
+            <p>Informieren Sie sich über spezifische Artikel,
+                die von verschiedenen Herstellern angeboten werden.
+                Unsere Datenbank umfasst eine Vielzahl von Artikeln,
+                einschließlich ihrer Preise, Verfügbarkeit und
+                Global Trade Number. Vergleichen Sie ähnliche Artikel
+                und treffen Sie die beste Kaufentscheidung.</p>
+            <div class="btn-mehranzeigen">
+                <a href="./artikel.html">Mehr anzeigen</a>
+                <img src="images/arrow-icon.svg">
+            </div>
+        </div>
+        <div class="box1">
+            <img src="images/unternehmen-icon.svg" class="box1-icon">
+            <h3>Unternehmen</h3>
+            <p>Erfahren Sie mehr über die Unternehmen, die hinter
+                den Produkten in Ihrer Drogerie stehen. Sie finden
+            unter anderem Kontaktdaten und Ort.</p>
+            <div class="btn-mehranzeigen">
+                <a href="./unternehmen.html">Mehr anzeigen</a>
+                <img src="images/arrow-icon.svg">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+    <div class="logo-description">
+        <h3>PreisFinder<span>24</span></h3>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+    </div>
+    <div class="footer-nav">
+        <div class="nav-item"><a href="startseite.html">Startseite</a></div>
+        <div class="nav-item"><a href="geschaefte.html">Geschäfte</a></div>
+        <div class="nav-item"><a href="produkte.html">Produkte</a></div>
+        <div class="nav-item"><a href="artikel.html">Artikel</a></div>
+        <div class="nav-item"><a href="unternehmen.html">Unternehmen</a></div>
+        <div class="nav-item"><a href="kassenbons.html">Kassenbons</a></div>
+    </div>
+</div>
+
+<script>
+    function openNewPage() {
+        window.location.href = "artikel.html";
+    }
+</script>
+<script id="nav-template" type="text/x-handlebars-template">
+    {{#each pages}}
+    <li>
+        <a href="{{ this.link }}">{{ this.name }}</a>
+    </li>
+    {{/each}}
+</script>
+
+<script id="artikel-template" type="text/x-handlebars-template">
+    {{#each items}}
+    <div class="artikel">
+        <img src="http://trawl-fki.ostfalia.de/{{ this.image}}" width="125" height="125">
+        <div class="right-side-artikel">
+            <h3 class="artikel-id">{{ this.id }}</h3>
+            <h2>{{ this.nice_name }}</h2>
+            <p>{{ this.gtin }}</p>
+            <!--<img src="http://trawl-fki.ostfalia.de/{{ this.image}}">-->
+            <a class="btn-mehranzeigenV2" href="artikel-details.html?id={{ this.gtin }}">
+                Details ansehen
+                <img src="images/arrow-iconV2.svg">
+            </a>
+        </div>
+    </div>
+    {{/each}}
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const pages = [
+            { name: "Startseite", link: "/startseite.html" },
+            { name: "Geschäfte", link: "/geschaefte.html" },
+            { name: "Produkte", link: "/produkte.html" },
+            { name: "Artikel", link: "/artikel.html" },
+            { name: "Unternehmen", link: "/unternehmen.html" },
+            { name: "Kassenbons", link: "/kassenbons.html" },
+        ];
+
+        // Compile and render the navigation template
+        const navSource = document.getElementById('nav-template').innerHTML;
+        const navTemplate = Handlebars.compile(navSource);
+        const navHtml = navTemplate({ pages: pages });
+        document.getElementById('template_root').innerHTML = navHtml;
+
+        if (localStorage.getItem('apikey') === null) {
+            localStorage.setItem('apikey', prompt('API KEY PLZ'));
+        }
+
+        let currentPage = 0;
+        let totalPages = 0;
+
+        function fetchItems(page = 0) {
+            const apiUrl = `http://trawl-fki.ostfalia.de/api/item/find?name=%25&page=${page}&size=6`;
+
+            fetch(apiUrl, {
+                headers: {
+                    'Accept': 'application/json',
+                    'X-API-KEY': localStorage.getItem('apikey')
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    let items = data.content;
+                    totalPages = data.info.totalPages;
+                    currentPage = page;
+
+                    items = items.map((item) => {
+                        item.nice_name = `${item.name.split('_')[0]}, ${item.product}`;
+                        item.gtin = `${item.gtin}`;
+                        item.image = `${item.image}`;
+                        return item;
+                    });
+
+                    // Compile and render the template
+                    const source = document.getElementById('artikel-template').innerHTML;
+                    const template = Handlebars.compile(source);
+                    const context = { items: items };
+                    const html = template(context);
+
+                    document.querySelector('.all-artikels').innerHTML = html;
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                });
+        }
+
+        fetchItems();
+    });
+</script>
+<script src="script.js"></script>
+</body>
+</html>

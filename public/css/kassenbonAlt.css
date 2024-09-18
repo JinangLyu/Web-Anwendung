@@ -1,0 +1,186 @@
+/** {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+h1 {
+    color: var(--main-dark);
+    text-align: center;
+}
+.bon {
+    margin-top: 3em;
+    margin-bottom: 3em;
+    background: beige;
+    width: 80%;
+    height: auto;
+    max-width: 500px;
+    min-height: 600px;
+    padding: 1em;
+}
+.bon .bon__row,
+.bon .bon__title {
+    width: 100%;
+    display: block;
+}
+.bon .bon__title {
+    text-align: center;
+    font-size: 4em;
+}
+.bon .bon__title .bon__editable {
+    width: 100%!important;
+    max-width: 100%;
+    word-break: break-word;
+}
+.bon .bon__row {
+    //width: 1.5em; // TODO
+}
+.bon .bon__row input {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #000000;
+}
+.bon .bon__row input:focus{
+    outline: none;
+}
+.bon .bon__row .bon__price input {
+    width: 4em;
+}
+.bon .bon__sum {
+    border-top: 5px double black;
+    padding-top: 1em;
+    margin-top: 1em;
+}
+.bon .bon__row .bon__label,
+.bon .bon__row .bon__price {
+    display: inline-block;
+}
+.bon .bon__row .bon__label {
+    width: 79%;
+    padding-left: 1em;
+}
+.bon .bon__row .bon__price {
+    width: 19%;
+    text-align: right;
+    padding-right: 1em;
+}
+.bon .bon__editable {
+    border-bottom: 1px dashed black;
+}*/
+
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+h1 {
+    color: var(--main-dark);
+    text-align: center;
+    margin-top: 64px;
+    font-size: 24px;
+}
+
+.bon {
+    margin: 2em auto;
+    margin-bottom: 80px;
+    background: white;
+    width: 80%;
+    max-width: 500px;
+    padding: 2em;
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+}
+
+.bon__title {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.bon__editable {
+    display: inline-block;
+    border-bottom: 1px dashed #000;
+    cursor: pointer;
+}
+
+.bon__row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding: 5px 0;
+}
+
+.bon__label,
+.bon__price {
+    flex: 1;
+    margin: 0 10px;
+}
+
+.bon__label {
+    text-align: left;
+}
+
+.bon__price {
+    text-align: right;
+    font-weight: bold;
+}
+
+.bon__label input,
+.bon__price input {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+}
+
+.bon__sum {
+    border-top: 2px solid #000;
+    padding-top: 10px;
+    font-weight: bold;
+}
+
+.bon__delete {
+    color: red;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+select {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.footer h3 a {
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .bon {
+        width: 90%;
+    }
+
+    .bon__title {
+        font-size: 20px;
+    }
+
+    .bon__label,
+    .bon__price {
+        margin: 0 5px;
+    }
+
+    .footer .logo-description h3 {
+        font-size: 16px;
+    }
+
+    .footer .logo-description p {
+        font-size: 12px;
+    }
+
+    .footer-nav .nav-item a {
+        font-size: 14px;
+    }
+}

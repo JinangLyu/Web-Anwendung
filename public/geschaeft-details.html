@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/startseite_main.css">
+    <link rel="stylesheet" href="css/detailseite.css">
+    <title>PreisFinder24 - Geschäftsdetails</title>
+    <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+    <script src="template.js"></script>
+</head>
+<body id="template">
+<!-- NAVBAR-Section -->
+<header>
+    <a class="logo" href="startseite.html">PreisFinder<span>24</span></a>
+    <div class="hamburger">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+    </div>
+    <nav class="nav-bar">
+        <ul id="template_root">
+            <!-- Navigation will be rendered here -->
+        </ul>
+    </nav>
+    <div class="profileside">
+        <button class="btn-second">Log in</button>
+        <button class="btn-main">Registrieren</button>
+        <img src="images/user-icon.svg" alt="user-icon">
+    </div>
+</header>
+
+<!-- Main-Section -->
+<div class="div__container">
+    <!-- Company Details -->
+    <div id="geschaeft-details">
+        <!-- Handlebars template will be rendered here -->
+    </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+    <div class="logo-description">
+        <h3>PreisFinder<span>24</span></h3>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+    </div>
+    <div class="footer-nav">
+        <div class="nav-item"><a href="startseite.html">Startseite</a></div>
+        <div class="nav-item"><a href="geschaefte.html">Geschäfte</a></div>
+        <div class="nav-item"><a href="produkte.html">Produkte</a></div>
+        <div class="nav-item"><a href="artikel.html">Artikel</a></div>
+        <div class="nav-item"><a href="unternehmen.html">Unternehmen</a></div>
+        <div class="nav-item"><a href="kassenbons.html">Kassenbons</a></div>
+    </div>
+</div>
+
+<!-- Company Details Template -->
+<script id="geschaeft-details-template" type="text/x-handlebars-template">
+<div class="detail-navigation geschaeft-nav" style="margin-bottom: 0px">
+    <img src="images/arrow-iconV2.svg">
+    <a href="geschaefte.html">Zurück zu Geschäfte</a>
+</div>
+<div class="container_details">
+    <div class="section" id="description">
+        <h2>{{ name }}</h2>
+        <p>{{ description }}</p>
+        <p>Id: {{ id }}</p>
+    </div>
+    <div class="section">
+        <h2>Addressdetails</h2>
+        <p>Kontakt: {{ location.address.contact }}</p>
+        <p>Straße: {{ location.address.street }}</p>
+        <p>Stadt: {{ location.address.city }}</p>
+        <p>Bundesland: {{ location.address.state }}</p>
+        <p>Postleitzahl: {{ location.address.zip }}</p>
+        <p>Land: {{ location.address.country }}</p>
+    </div>
+    <div class="section">
+        <h2>Ort</h2>
+        <p>Longitude: {{ location.longitude }}</p>
+        <p>Latitude: {{ location.latitude }}</p>
+        <p>Unternehmen: {{ company }}</p>
+    </div>
+</div>
+</script>
+
+<script id="nav-template" type="text/x-handlebars-template">
+    {{#each pages}}
+    <li>
+        <a href="{{ this.link }}">{{ this.name }}</a>
+    </li>
+    {{/each}}
+</script>
+
+<script>
+    if (localStorage.getItem('apikey') === null) {
+        localStorage.setItem('apikey', prompt('API KEY PLZ'));
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // Get company ID from query parameter
+        const params = new URLSearchParams(window.location.search);
+        const storeId = params.get('id');
+
+        // Fetch and display company details
+        if (storeId) {
+            fetchStoreDetails(storeId);
+        }
+
+        // Compile and render the navigation template
+        const pages = [
+            { name: "Startseite", link: "/startseite.html" },
+            { name: "Geschäfte", link: "/geschaefte.html" },
+            { name: "Produkte", link: "/produkte.html" },
+            { name: "Artikel", link: "/artikel.html" },
+            { name: "Unternehmen", link: "/unternehmen.html" },
+            { name: "Kassenbons", link: "/kassenbons.html" },
+        ];
+
+        const navSource = document.getElementById('nav-template').innerHTML;
+        const navTemplate = Handlebars.compile(navSource);
+        const navHtml = navTemplate({ pages: pages });
+        document.getElementById('template_root').innerHTML = navHtml;
+    });
+
+    function fetchStoreDetails(storeId) {
+        const apiUrl = `http://trawl-fki.ostfalia.de/api/store/${storeId}`;
+
+        fetch(apiUrl, {
+            headers: {
+                'Accept': 'application/json',
+                'X-API-KEY': localStorage.getItem('apikey')
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Assuming the API returns the company object directly
+                const company = data;
+
+                // Compile and render the template
+                const source = document.getElementById('geschaeft-details-template').innerHTML;
+                const template = Handlebars.compile(source);
+                const html = template(company);
+
+                document.getElementById('geschaeft-details').innerHTML = html;
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+    }
+</script>
+
+<script src="script.js"></script>
+</body>
+</html>

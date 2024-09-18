@@ -1,0 +1,42 @@
+<header>
+    <a class="logo" href="startseite.html">PreisFinder<span>24</span></a>
+    <div class="hamburger">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+    </div>
+    <nav class="nav-bar">
+        <ul>
+            {% for page in pages %}
+            <li>
+                <a href="{{ page.link }}" {% if location.pathname == page.link %}class="active"{% endif %}>{{ page.name }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </nav>
+    <div class="profileside">
+        <button class="btn-second">Log in</button>
+        <button class="btn-main">Registrieren</button>
+        <img src="images/user-icon.svg" alt="user-icon">
+    </div>
+</header>
+
+
+<!-- Main-Section -->
+<main>
+{% block main %}
+{% endblock %}
+
+
+<!-- FOOTER -->
+<div class="footer">
+    <div class="logo-description">
+        <h3><a href="startseite.html">PreisFinder<span>24</span></a></h3>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+    </div>
+    <div class="footer-nav">
+        {% for page in pages %}
+            <div class="nav-item"><a href="{{ page.link }}">{{ page.name }}</a></div>
+        {% endfor %}
+    </div>
+</div>

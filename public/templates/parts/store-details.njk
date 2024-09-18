@@ -1,0 +1,22 @@
+{% macro storeDetails(store) %}
+<div class="section">
+    <h2>{{ store.name }}</h2>
+    <p>{% if store.name == store.description %}Beschreibung: {% endif %}{{ store.description }}</p>
+    <p>ID: <code>{{ store.id }}</code></p>
+</div>
+<div class="section">
+    <h2>Addressdetails</h2>
+    <p>Kontakt: {{ store.location.address.contact }}</p>
+    <p>Straße: {{ store.location.address.street }}</p>
+    <p>Stadt: {{ store.location.address.city }}</p>
+    <p>Bundesland: {{ store.location.address.state }}</p>
+    <p>Postleitzahl: {{ store.location.address.zip }}</p>
+    <p>Land: {{ store.location.address.country }}</p>
+</div>
+<div class="section">
+    <h2>Ort</h2>
+    <p>Longitude: {{ store.location.longitude }}</p>
+    <p>Latitude: {{ store.location.latitude }}</p>
+    <p>Unternehmen: {{ store.company }}</p>
+</div>
+{% endmacro %}

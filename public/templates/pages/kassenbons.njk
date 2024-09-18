@@ -1,0 +1,47 @@
+{% extends 'templates/base.njk'%}
+
+{% block main %}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<div class="div__container">
+    <!-- Titel, Filter-Buttons -->
+    <h2 id="bon-title">Kassenbons</h2>
+    <div class="filter-buttons">
+        <a id="id-search-btn" class="add-btn" href="kassenbon.html">Neuer Kassenzettel</a>
+    </div>
+
+    <!-- all bons -->
+    <div class="all-bons">
+        {% for store_id, store_bons in bons | dictsort %}
+            <div class="all-bons__store">
+                <h3>{{ store_bons.details.name }}</h3>
+                {% for timestamp, bon_dates in store_bons.dates | dictsort %}
+                <div class="bon">
+                    <div
+                        class="all-bons__delete"
+                        onclick="trash({{ store_id | json }}, {{ timestamp | json }})"
+                    >
+                        <button class="btn-loeschen">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                    <h2>{{ timestamp | datetime }}</h2>
+                    <ul>
+                        {% for entry in bon_dates.entries %}
+                        <li>{{ entry.details.name }} for {{ (entry.item.price / 100) | price }}&nbsp;€</li>
+                        {% endfor %}
+                    </ul>
+                    <h3 class="bon-total">= {{ (bon_dates.total / 100) | price }} € </h3>
+                    <a class="btn-mehranzeigenV2" href="kassenbon.html?store={{ store_id }}&date={{ timestamp }}">
+                        Details ansehen
+                        <img src="images/arrow-iconV2.svg">
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

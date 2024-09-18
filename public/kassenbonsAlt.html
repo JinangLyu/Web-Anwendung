@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/startseite_main.css">
+
+    <link rel="stylesheet" href="css/kassenbonsAlt.css">
+    <title>PreisFinder24 - Kassenbons</title>
+    <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+    <script src="../../webprogrammierung2024/public/template.js"></script>
+</head>
+<body id="template">
+<!-- NAVBAR-Section -->
+<header>
+    <a class="logo" href="../../webprogrammierung2024/public/startseite.html">PreisFinder<span>24</span></a>
+    <div class="hamburger">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+    </div>
+    <nav class="nav-bar">
+        <ul id="template_root">
+            <!-- Navigation wird hier eingefügt -->
+        </ul>
+    </nav>
+    <div class="profileside">
+        <button class="btn-second">Log in</button>
+        <button class="btn-main">Registrieren</button>
+        <img src="../../webprogrammierung2024/public/images/user-icon.svg" alt="user-icon">
+    </div>
+</header>
+
+
+<!-- Main-Section -->
+<div class="div__container">
+    <div class="main-texts">
+        <h1>Kassenbons</h1>
+        <div class="button-container">
+            <button class="btn-main btn-artikel" onclick="addKassenbon()">Kassenbon hinzufügen</button>
+            <input type="text" id="gtin-search" placeholder="Kassenbon löschen nach Name">
+            <button class="btn-main btn-artikel" onclick="deleteKassenbon()">Kassenbon löschen</button>
+        </div>
+    </div>
+
+
+    <div class="all-kassenbons">
+        <!-- einzelne Kassenbons, später durch Handlebars-Template ersetzen -->
+        <div class="kassenbon">
+            <h2>Kassenbon 1</h2>
+            <h3 class="kassenbon-datum">20.Mai 2025 23:23:30</h3>
+            <p>2,40€</p>
+            <a class="btn-mehranzeigenV2" href="../../webprogrammierung2024/public/kassenbon.html?id={{ this.gln }}">
+                Details ansehen
+                <img src="../../webprogrammierung2024/public/images/arrow-iconV2.svg">
+            </a>
+        </div>
+
+    </div>
+</div>
+
+<!--<script id="kassenbons-template" type="text/x-handlebars-template">
+    {{#each kassenbons}}
+
+    {{/each}}
+</script>-->
+
+<!-- FOOTER -->
+<div class="footer">
+    <div class="logo-description">
+        <h3>PreisFinder<span>24</span></h3>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+    </div>
+    <div class="footer-nav">
+        <div class="nav-item"><a href="../../webprogrammierung2024/public/startseite.html">Startseite</a></div>
+        <div class="nav-item"><a href="../../webprogrammierung2024/public/geschaefte.html">Geschäfte</a></div>
+        <div class="nav-item"><a href="../../webprogrammierung2024/public/produkte.html">Produkte</a></div>
+        <div class="nav-item"><a href="../../webprogrammierung2024/public/artikel.html">Artikel</a></div>
+        <div class="nav-item"><a href="../../webprogrammierung2024/public/unternehmen.html">Unternehmen</a></div>
+        <div class="nav-item"><a href="kassenbons.html">Kassenbons</a></div>
+    </div>
+</div>
+
+<script id="nav-template" type="text/x-handlebars-template">
+    {{#each pages}}
+    <li>
+        <a href="{{ this.link }}">{{ this.name }}</a>
+    </li>
+    {{/each}}
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const pages = [
+            {name: "Startseite", link: "/startseite.html"},
+            {name: "Geschäfte", link: "/geschaefte.html"},
+            {name: "Produkte", link: "/produkte.html"},
+            {name: "Artikel", link: "/artikel.html"},
+            {name: "Unternehmen", link: "/unternehmen.html"},
+            {name: "Kassenbons", link: "/kassenbons.html"},
+        ];
+
+        // Compile and render the navigation template
+        const navSource = document.getElementById('nav-template').innerHTML;
+        const navTemplate = Handlebars.compile(navSource);
+        const navHtml = navTemplate({pages: pages});
+        document.getElementById('template_root').innerHTML = navHtml;
+    });
+
+        function addKassenbon() {
+            const kassenbonHTML = `
+            <div class="kassenbon">
+                <h2>Kassenbon ${document.querySelectorAll('.kassenbon').length + 1}</h2>
+                <h3 class="kassenbon-datum">${new Date().toLocaleString('de-DE')}</h3>
+                <p>2,40€</p>
+                <a class="btn-mehranzeigenV2" href="../../webprogrammierung2024/public/kassenbon.html?id={{ this.gln }}">
+                    Details ansehen
+                    <img src="../../webprogrammierung2024/public/images/arrow-iconV2.svg">
+                </a>
+            </div>`;
+            document.querySelector('.all-kassenbons').insertAdjacentHTML('beforeend', kassenbonHTML);
+        }
+
+        function deleteKassenbon() {
+            const kassenbonName = document.getElementById('gtin-search').value.trim();
+            const kassenbons = document.querySelectorAll('.kassenbon');
+            kassenbonsAlt.forEach(kassenbon => {
+                if (kassenbon.querySelector('h2').textContent === kassenbonName) {
+                    kassenbon.remove();
+                }
+            });
+        }
+
+</script>
+<script src="script.js"></script>
+</body>
+</html>

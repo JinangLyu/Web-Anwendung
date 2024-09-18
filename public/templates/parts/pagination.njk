@@ -1,0 +1,33 @@
+{% macro paginator(pagination) %}
+<div class="page_container">
+    <div class="pagination">
+        <button
+            class="btn-page prev"
+            onclick="gotoPage(false)"
+        >
+            Zurück
+        </button>
+        <ul class="ul-pagination">
+            {% for page in pagination %}
+            {% if page.isEllipsis %}
+            <li class="link">...</li>
+            {% else %}
+            <li
+                class="link clickable {% if page.isActive %} active{% endif %}"
+                value="{{ page.page }}"
+                onclick="gotoPage({{ page.page }})"
+            >
+                {{ page.page }}
+            </li>
+            {% endif %}
+            {% endfor %}
+        </ul>
+        <button
+            class="btn-page next"
+            onclick="gotoPage(true)"
+        >
+            Weiter
+        </button>
+    </div>
+</div>
+{% endmacro %}
